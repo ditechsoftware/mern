@@ -1,9 +1,13 @@
 const express = require('express')
+const colors = require('colors')
 const app = express()
 const { errorHandler } = require('./middleware/errMiddleware')
 const dotenv = require('dotenv').config()
 const port = process.env.PORT || 5000
+const connectDB = require('./config/db')
 
+
+connectDB()
 // set up minddleware to be able see data in body send from req
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
