@@ -1,0 +1,34 @@
+const jwt = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
+const User = require('../model/userModel')
+
+const protect = asyncHandler( 
+    async (req, res, next) => {
+        let token
+        // in http haeder we have authorization object
+        // be cz when the token is sent in the authorization header in format Bearer sdgkhfjg
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            try {
+                // get token from header
+                token = req.headers.authorization.split(' ')[1]
+               
+                // veryfy token
+                const decoded = jwt.verify( token, process.env.JWT_SECRET)
+                // get user from the token: cz token has user id as a payload we also want to asign it to req.user
+                req.user = await User.findById(decoded.id).select('-password')// it's a user that authenticated
+
+                next()
+            } catch (error) {
+                console.log(error)
+                res.status(401)
+                throw new Error('Not authorize')
+            }
+    } 
+    if(!token){
+        res.status(401)
+        throw new Error('Not authorize, no token')
+    }
+  }
+)
+
+module.exports = { protect }
