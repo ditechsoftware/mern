@@ -2,10 +2,9 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000
 const { errorHandler } = require('./middleware/errMiddleware')
-const dotenv = require('dotenv').config() // it's alowed us to have .emv file 
+const dotenv = require('dotenv').config() // it's alowed us to have .env file 
 const colors = require('colors')
 const connectDB = require('./config/db')
-
 connectDB()
 
 // set up minddleware to be able see data in body send from req

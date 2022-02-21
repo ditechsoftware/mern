@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../model/userModel')
 
-const registerUser  = asyncHandler( async (req, res) =>{
+// Register User
+const registerUser = asyncHandler( async (req, res) =>{
     const { name, email, password } = req.body
     if(!name || !email || !password) {
         res.status(400)
@@ -24,18 +25,22 @@ const registerUser  = asyncHandler( async (req, res) =>{
         email,
         password: hashedPass
     })
+
     if(user) {
         res.status(201).json({
             _id: user.id,
             name: user.name,
             email: user.email,
-            token: generateToken(user._id)
+            password: user.password,
+            token: generateToken(user.id)
         })
     } else {
         res.status(400)
         throw  new Error('Invalid user data')
     }
 })
+
+// Login User
 const loginUser  = asyncHandler( async (req, res) =>{
     const { email, password} = req.body
     //Check for user email
@@ -45,7 +50,8 @@ const loginUser  = asyncHandler( async (req, res) =>{
             _id: user.id,
             name: user.name,
             email: user.email,
-            token: generateToken(user._id)
+            password: user.password,
+            token: generateToken(user.id)
         })
     } else {
         res.status(400)
@@ -58,7 +64,8 @@ const getMe  = asyncHandler( async (req, res) =>{
     res.status(200).json({
         id: _id,
         name,
-        email,  
+        email,
+        token: generateToken(_id)  
     })
 })
 
